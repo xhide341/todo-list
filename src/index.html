@@ -1,52 +1,66 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>hide's todo list</title>
-</head>
-<body>
+  </head>
+  <body>
     <sidebar id="sidebar">
-        <h1>To-do</h1>
-        <div class="categories">
-            <div class="category-item">
-                <div class="add-task">
-                    <span>+</span>
-                    <p>Add task</p>
-                </div>
-            </div>
-            <div class="category-item home-category">
-                <p>Home</p>
-                <span class="task-count">1</span>
-            </div>
-            <div class="category-item today-category">
-                <p>Today</p>
-                <span class="task-count">3</span>
-            </div>
-            <div class="category-item upcoming-category">
-                <p>Upcoming</p>
-                <span class="task-count">1</span>
-            </div>
+      <h1>To-do</h1>
+      <div class="categories">
+        <div class="category-item">
+          <div class="add-task">
+            <span>+</span>
+            <p>Add task</p>
+          </div>
         </div>
-        <hr class="category-separator">
-        <div class="categories">
-            <h2>My Projects</h2>
-            <div class="category-item">
-                <p>Work</p>
-                <span class="task-count">1</span>
-            </div>
-            <div class="category-item">
-                <p>Fitness</p>
-                <span class="task-count">1</span>
-            </div>
-            <div class="category-item">
-                <p>Grocery</p>
-                <span class="task-count">1</span>
-            </div>
+        <div class="category-item home-category">
+          <p>Home</p>
+          <span class="task-count">1</span>
         </div>
+        <div class="category-item today-category">
+          <p>Today</p>
+          <span class="task-count">3</span>
+        </div>
+        <div class="category-item upcoming-category">
+          <p>Upcoming</p>
+          <span class="task-count">1</span>
+        </div>
+      </div>
+      <hr class="category-separator" />
+      <div class="categories">
+        <h2>My Projects</h2>
+        <div class="category-item">
+          <p>Work</p>
+          <span class="task-count">1</span>
+        </div>
+        <div class="category-item">
+          <p>Fitness</p>
+          <span class="task-count">1</span>
+        </div>
+        <div class="category-item">
+          <p>Grocery</p>
+          <span class="task-count">1</span>
+        </div>
+      </div>
     </sidebar>
-    <main id="main">
-
-    </main>
-</body>
+    <main id="main"></main>
+    <div id="todo-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Add/Edit Todo</h2>
+            <form id="todo-form">
+                <input type="text" name="title" placeholder="Title" required>
+                <input type="date" name="dueDate" required>
+                <select name="priority" required>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+  </body>
 </html>
