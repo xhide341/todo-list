@@ -1,4 +1,6 @@
 import '../style.css';
+import deleteIcon from '../icons/delete.svg';
+import editIcon from '../icons/edit.svg';
 
 const renderTodo = () => {
     const main = document.getElementById('main');
@@ -14,8 +16,7 @@ const renderTodo = () => {
     // toDoCheckbox.id = `todo-checkbox-${Date.now()}`; // Unique ID
     toDoCheckbox.classList.add('todo-checkbox');
 
-    const toDoLabel = document.createElement('label');
-    toDoLabel.htmlFor = toDoCheckbox.id;
+    const toDoLabel = document.createElement('div');
     toDoLabel.classList.add('todo-label');
 
     const toDoTitle = document.createElement('h5');
@@ -28,19 +29,41 @@ const renderTodo = () => {
 
     const toDoDueDate = document.createElement('p');
     toDoDueDate.classList.add('todo-due-date');
+    toDoDueDate.innerText = '2023-01-01';
 
     const toDoPriority = document.createElement('div');
     toDoPriority.classList.add('priority-color');
 
+    // add action icons
+    const toDoDelete = document.createElement('img');
+    toDoDelete.src = deleteIcon;
+    toDoDelete.alt = 'delete';
+    toDoDelete.classList.add('todo-delete');
+    const toDoEdit = document.createElement('img');
+    toDoEdit.src = editIcon;
+    toDoEdit.alt = 'edit';
+    toDoEdit.classList.add('todo-edit');
+    const actionIcons = document.createElement('div');
+    actionIcons.classList.add('action-icons');
+
+    // add divider
+    const divider = document.createElement('div');
+    divider.classList.add('divider');
+
+    actionIcons.appendChild(toDoEdit);
+    actionIcons.appendChild(toDoDelete);
+
     toDoLabel.appendChild(toDoTitle);
-    toDoLabel.appendChild(toDoDescription);
+    toDoLabel.appendChild(toDoDueDate);
 
     toDoItem.appendChild(toDoCheckbox);
     toDoItem.appendChild(toDoLabel);
-    toDoItem.appendChild(toDoDueDate);
+    // toDoItem.appendChild(toDoDescription);
     toDoItem.appendChild(toDoPriority);
+    toDoItem.appendChild(actionIcons);
 
     itemContainer.appendChild(toDoItem);
+    
     main.appendChild(itemContainer);
 };
 

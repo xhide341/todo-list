@@ -131,42 +131,60 @@ body {
 .todo-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    background-color: var(--var-color-secondary);
-    padding: 10px;
+    gap: 6px;
+    background-color: var(--var-color-secondary);    
     width: 1000px;
 }
 
 .todo-item {
     display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
+    padding: 15px;
+    border-top: 3px solid black;
+    border-right: 8px solid green;
 }
 
 .todo-checkbox {
-    border-radius: 15px;
-    
+    cursor: pointer;
 }
 
 .todo-label {
-    flex-grow: 1;
-    cursor: pointer;
+    flex: 1;
+    width: fit-content;
 }
 
 .todo-title {
     margin: 0;
     font-size: 1rem;
+    width: fit-content;
 }
-
+/* 
 .todo-description {
-    font-size: 0.9rem;
+    flex: 1;
+    font-size: 1rem;
     color: #ffffff;
-}
+} */
 
 .todo-due-date {
-    margin-left: 10px;
     font-size: 0.8em;
-    color: #888;
+    color: var(--var-color-primary);
+    width: fit-content;
 }
 
+.action-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 20px;
+}
 
+.action-icons img {
+    cursor: pointer;
+}
+
+.action-icons img:active {
+    transform: scale(0.9);
+}
