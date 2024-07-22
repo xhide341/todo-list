@@ -1,15 +1,16 @@
 // components/TodoList.js
 
-import { renderTodoItem } from './TodoItem.js';
+import { renderTodoItem } from './todoItem.js';
 
-export const renderTodoList = (todos, onToggle, onEdit, onDelete) => {
+export const renderTodoList = (todos, category, onToggle, onEdit, onDelete) => {
     const main = document.getElementById('main');
     main.innerHTML = ''; // Clear main content
 
     // Add category title
-    const categoryTitle = document.createElement('h2');
-    categoryTitle.textContent = todos.length > 0 ? todos[0].category : 'No tasks';
-    main.appendChild(categoryTitle);
+    const pageTitle = document.createElement('h2');
+    pageTitle.textContent = category;
+    pageTitle.classList.add('page-title');
+    main.appendChild(pageTitle);
 
     // Create todo list container
     const todoList = document.createElement('div');

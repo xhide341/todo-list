@@ -3,10 +3,10 @@ import "../style.css";
 import deleteIcon from '../icons/delete.svg';
 import editIcon from '../icons/edit.svg';
 
-export const renderTodoItem = (todo) => {
+export const renderTodoItem = (todo, onToggle, onEdit, onDelete) => {
     const itemContainer = document.createElement('div');
     itemContainer.classList.add('todo-container');
-    itemContainer.dataset.id = todo.id;
+    itemContainer.dataset.id = todo.id;  // Set the todo ID as a data attribute
 
     const toDoItem = document.createElement('div');
     toDoItem.classList.add('todo-item');
@@ -16,6 +16,10 @@ export const renderTodoItem = (todo) => {
     toDoCheckbox.type = 'checkbox';
     toDoCheckbox.classList.add('todo-checkbox');
     toDoCheckbox.checked = todo.completed || false;
+    toDoCheckbox.addEventListener('change', () => {
+        onToggle(todo.id, toDoCheckbox.checked);
+        updateCompletedStyle(toDoCheckbox.checked, toDoTitle, toDoDueDate);
+    });
 
     // Label container
     const toDoLabel = document.createElement('div');
@@ -31,10 +35,12 @@ export const renderTodoItem = (todo) => {
     toDoDueDate.classList.add('todo-due-date');
     toDoDueDate.textContent = todo.dueDate;
 
+    // Set initial completed style
+    updateCompletedStyle(todo.completed, toDoTitle, toDoDueDate);
+
     // Priority indicator
-    const toDoPriority = document.createElement('div');
-    toDoPriority.classList.add('priority-color');
-    toDoPriority.attributeStyleMap.set('style', `border-right: 2px solid ${getPriorityColor(todo.priority)};`);
+    const priorityColor = getPriorityColor(todo.priority);
+    itemContainer.style.borderLeft = `5px solid ${priorityColor}`;
 
     // Action icons container
     const actionIcons = document.createElement('div');
@@ -45,13 +51,14 @@ export const renderTodoItem = (todo) => {
     toDoEdit.src = editIcon;
     toDoEdit.alt = 'edit';
     toDoEdit.classList.add('todo-edit');
+    toDoEdit.addEventListener('click', () => onEdit(todo.id));
 
     // Delete icon
     const toDoDelete = document.createElement('img');
     toDoDelete.src = deleteIcon;
     toDoDelete.alt = 'delete';
     toDoDelete.classList.add('todo-delete');
-
+    toDoDelete.addEventListener('click', () => onDelete(todo.id));
 
     toDoLabel.appendChild(toDoTitle);
     toDoLabel.appendChild(toDoDueDate);
@@ -61,24 +68,11 @@ export const renderTodoItem = (todo) => {
 
     toDoItem.appendChild(toDoCheckbox);
     toDoItem.appendChild(toDoLabel);
-    toDoItem.appendChild(toDoPriority);
     toDoItem.appendChild(actionIcons);
 
     itemContainer.appendChild(toDoItem);
 
-    itemContainer.querySelector('.todo-checkbox').addEventListener('change', () => onToggle(todo.id));
-    itemContainer.querySelector('.todo-edit').addEventListener('click', () => onEdit(todo.id));
-    itemContainer.querySelector('.todo-delete').addEventListener('click', () => onDelete(todo.id));
-
     return itemContainer;
-};
-
-export const renderAddTaskButton = (onAddTask) => {
-    const button = document.createElement('button');
-    button.textContent = 'Add Task';
-    button.classList.add('add-task-button');
-    button.addEventListener('click', onAddTask);
-    return button;
 };
 
 // Helper function to get color based on priority
@@ -92,5 +86,16 @@ const getPriorityColor = (priority) => {
             return '#4caf50';
         default:
             return '#808080';
+    }
+};
+
+// Helper function to update completed style
+const updateCompletedStyle = (isCompleted, titleElement, dateElement) => {
+    if (isCompleted) {
+        titleElement.classList.add('completed');
+        dateElement.classList.add('completed');
+    } else {
+        titleElement.classList.remove('completed');
+        dateElement.classList.remove('completed');
     }
 };

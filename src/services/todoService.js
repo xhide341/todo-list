@@ -1,5 +1,6 @@
 // services/todoService.js
 
+import { v4 as uuidv4 } from 'uuid';
 import { saveTodos, loadTodos } from '../utils/storage.js';
 
 export const getTodos = (category) => {
@@ -8,7 +9,12 @@ export const getTodos = (category) => {
 
 export const addTodo = (category, todo) => {
     const todos = loadTodos(category);
-    todos.push({ ...todo, id: Date.now(), completed: false });
+    const newTodo = {
+        ...todo,
+        id: uuidv4(),  // Generate a UUID for the todo
+        completed: false
+    };
+    todos.push(newTodo);
     saveTodos(category, todos);
     return todos;
 };

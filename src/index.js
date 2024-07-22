@@ -1,15 +1,36 @@
-import { initTodoController } from './controllers/todoController.js';
+// src/index.js
 
+import { initTodoController } from './controllers/todoController.js';
+import { initProjectController } from './controllers/projectController.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const categories = ['Home', 'Today', 'Upcoming', 'Work', 'Fitness', 'Grocery'];
-    let currentCategory = 'Home'; // Default category
+    // Function to detect categories from the DOM
+    function getCategoriesFromDOM() {
+      const categoryItems = document.querySelectorAll('#sidebar .category-item');
+      const categories = [];
+      categoryItems.forEach(item => {
+        const categoryName = item.querySelector('p').textContent.trim();
+        categories.push(categoryName);
+      });
+      return categories;
+    }
+
+    // Initialize the project controller
+    initProjectController();
+  
+    // Get categories from the DOM
+    const categories = getCategoriesFromDOM();
+  
+    let currentCategory = 'Home';
+    console.table(categories);
 
     const main = document.getElementById('main');
     const sidebar = document.getElementById('sidebar');
 
     // Initialize the todo controller with the default category
     initTodoController(currentCategory);
+
+
 
     // Set up event listeners for category selection
     sidebar.querySelectorAll('.category-item').forEach(item => {

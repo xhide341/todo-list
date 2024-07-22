@@ -78,6 +78,10 @@ body {
 
 #sidebar h1 {
   font-size: 1.75rem;
+}
+
+#sidebar h1,
+#sidebar h2 {
   margin-bottom: 10px;
 }
 
@@ -89,15 +93,6 @@ body {
   gap: 4px;
   margin-bottom: 10px;
   padding-right: 20px;
-}
-
-#sidebar .add-task {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  gap: 8px;
 }
 
 #sidebar .category-item {
@@ -129,6 +124,18 @@ body {
   margin: 20px 0;
 }
 
+.add-task,
+.add-project {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1rem;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+}
+
 /* main */
 
 #main {
@@ -141,6 +148,7 @@ body {
 
 .page-title {
   display: flex;
+  font-size: 2.5rem;
   margin-bottom: 20px;
 }
 
@@ -159,6 +167,11 @@ body {
   gap: 10px;
   padding: 15px;
   border-top: 1px solid black;
+}
+
+.todo-title.completed,
+.todo-due-date.completed {
+    text-decoration: line-through;
 }
 
 .todo-checkbox {
@@ -264,19 +277,27 @@ body {
     cursor: pointer;
 }
 
-.add-task-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    font-size: 16px;
+/* project */
+
+#project-modal .modal-content {
+  max-width: 300px;
 }
 
-.add-task-button:hover {
-    background-color: #45a049;
+#project-form input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+#project-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#project-form button:hover {
+  background-color: #45a049;
 }

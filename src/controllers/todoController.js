@@ -1,27 +1,25 @@
+// controller/todoController.js
 import { getTodos, addTodo, updateTodo, deleteTodo } from '../services/todoService.js';
-import { renderTodoList } from '../components/TodoList.js';
+import { renderTodoList } from '../components/todoList.js';
 
 export const initTodoController = (category) => {
     const main = document.getElementById('main');
     const modal = document.getElementById('todo-modal');
     const form = document.getElementById('todo-form');
 
+    // Controller functions
     const renderTodos = () => {
         const todos = getTodos(category);
-        main.innerHTML = ''; // Clear main content
-        renderTodoList(todos, onToggleTodo, onEditTodo, onDeleteTodo);
+        renderTodoList(todos, category, onToggleTodo, onEditTodo, onDeleteTodo);
     };
 
     const onAddTask = () => {
         modal.style.display = 'block';
-        form.reset(); // Clear form fields
+        form.reset();
     };
 
-    const onToggleTodo = (todoId) => {
-        const todos = getTodos(category);
-        const todo = todos.find(t => t.id === todoId);
-        updateTodo(category, todoId, { completed: !todo.completed });
-        renderTodos();
+    const onToggleTodo = (todoId, isCompleted) => {
+        updateTodo(category, todoId, { completed: isCompleted });
     };
 
     const onEditTodo = (todoId) => {
@@ -60,4 +58,10 @@ export const initTodoController = (category) => {
 
     // Initial render
     renderTodos();
+
+    // Return public methods if needed
+    return {
+        onAddTask,
+        renderTodos
+    };
 };
