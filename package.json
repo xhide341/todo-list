@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "write": "npx prettier . --write"
+    "write": "npx prettier . --write",
+    "gh-pages": "git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [],
   "author": "",
