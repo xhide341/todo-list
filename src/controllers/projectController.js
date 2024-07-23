@@ -1,80 +1,95 @@
-// controllers/projectController.js
-import { saveProjects, loadProjects } from '../utils/storage.js';
+import { saveProjects, loadProjects } from "../utils/storage.js";
+import {
+  refreshCategories,
+  addCategoryEventListeners,
+} from "../utils/categoryUtils.js";
 
-export const initProjectController = () => {
-    const projectList = document.getElementById('project-list');
-    const addProjectBtn = document.getElementById('add-project');
-    const projectModal = document.getElementById('project-modal');
-    const projectForm = document.getElementById('project-form');
-    const closeBtn = projectModal.querySelector('.modal-close');
-    const sidebar = document.getElementById('sidebar');
+let projectList;
+let todoController;
 
-    const renderProjects = () => {
-        let projects = loadProjects();
-        const defaultProjects = [
-            { name: 'Work', id: 'work-default', class: 'category-item' },
-            { name: 'Fitness', id: 'fitness-default', class: 'category-item'},
-            { name: 'Grocery', id: 'grocery-default', class: 'category-item' }
-        ];
-        
-        // Filter out any default projects that might already be in the loaded projects
-        projects = projects.filter(project => 
-            !defaultProjects.some(defaultProject => defaultProject.name === project.name)
-        );
-    
-        // Prepend default projects
-        projects = [...defaultProjects, ...projects];
-    
-        projectList.innerHTML = ''; // Clear existing projects
-    
-        projects.forEach(project => {
-            const projectElement = createProjectElement(project);
-            projectList.appendChild(projectElement);
-        });
-    };
-    
+const renderProjects = () => {
+  let projects = loadProjects();
+  const defaultProjects = [
+    { name: "Work", id: "work-default", class: "category-item" },
+    { name: "Fitness", id: "fitness-default", class: "category-item" },
+    { name: "Grocery", id: "grocery-default", class: "category-item" },
+  ];
 
-    const createProjectElement = (project) => {
-        const div = document.createElement('div');
-        div.classList.add('category-item');
-        div.innerHTML = `
-            <p>${project.name}</p>
-            <span class="task-count">0</span>
-        `;
-        return div;
-    };
+  projects = projects.filter(
+    (project) =>
+      !defaultProjects.some(
+        (defaultProject) => defaultProject.name === project.name,
+      ),
+  );
 
-    const addProject = (projectName) => {
-        const projects = loadProjects();
-        projects.push({ name: projectName, id: Date.now() });
-        saveProjects(projects);
-        renderProjects();
-    };
+  projects = [...defaultProjects, ...projects];
 
-    addProjectBtn.addEventListener('click', () => {
-        projectModal.style.display = 'block';
-    });
+  projectList.innerHTML = "";
 
-    closeBtn.addEventListener('click', () => {
-        projectModal.style.display = 'none';
-    });
+  projects.forEach((project) => {
+    const projectElement = createProjectElement(project);
+    projectList.appendChild(projectElement);
+  });
 
-    projectForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const projectName = projectForm.projectName.value;
-        addProject(projectName);
-        projectForm.reset();
-        projectModal.style.display = 'none';
-    });
+  const categories = [
+    "Home",
+    "Today",
+    "Upcoming",
+    ...projects.map((p) => p.name),
+  ];
+  addCategoryEventListeners(projectList, categories, todoController);
+};
 
-    const deleteAllProjects = () => {
-        const confirmation = confirm('Are you sure you want to delete all projects? This cannot be undone.');
-        if (confirmation) {
-          saveProjects([]); // Save an empty array to clear projects
-          renderProjects(); // Re-render to display the empty list
-        }
-      };
-    
-    // Initial render
-    renderProjects();
+const createProjectElement = (project) => {
+  const div = document.createElement("div");
+  div.classList.add("category-item");
+  div.innerHTML = `
+    <p>${project.name}</p>
+    <span class="task-count">0</span>
+  `;
+  return div;
+};
+
+const addProject = (projectName) => {
+  const projects = loadProjects();
+  projects.push({ name: projectName, id: Date.now() });
+  saveProjects(projects);
+  renderProjects();
+  refreshCategories(todoController);
+};
+
+export const initProjectController = (todoControllerInstance) => {
+  todoController = todoControllerInstance;
+  projectList = document.getElementById("project-list");
+  const addProjectBtn = document.getElementById("add-project");
+  const projectModal = document.getElementById("project-modal");
+  const projectForm = document.getElementById("project-form");
+  const closeButton = projectModal.querySelector(".modal-close");
+
+  addProjectBtn.addEventListener("click", () => {
+    projectModal.style.display = "block";
+  });
+
+  closeButton.addEventListener("click", () => {
+    projectModal.style.display = "none";
+  });
+
+  projectForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const projectName = projectForm.projectName.value;
+    addProject(projectName);
+    projectForm.reset();
+    projectModal.style.display = "none";
+  });
+
+  // Initial render
+  renderProjects();
+};
+
+export const resetProject = () => {
+  saveProjects([]);
+  renderProjects();
+  refreshCategories(todoController);
+  todoController.renderTodos("Home");
+  todoController.updateTaskCount();
 };

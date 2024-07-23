@@ -50,8 +50,10 @@ h6 {
 
 html {
   --var-color-primary: #f2e5d5;
-  --var-color-secondary: #8c6b42;
+  --var-color-secondary: #85643c;
   --var-color-tertiary: #bfa07a;
+  --var-color-white: #f6f6f9;
+  --var-color-black: #070606;
 }
 
 body {
@@ -63,7 +65,8 @@ body {
 }
 
 #sidebar {
-  display: fixed;
+  display: flex;
+  flex-direction: column;
   top: 0;
   left: 0;
   min-width: 1fr;
@@ -72,8 +75,12 @@ body {
   padding: 20px;
   grid-column: 1 / 2;
   background-color: var(--var-color-tertiary);
-  border-right: 2px solid #000000;
   overflow-y: auto;
+}
+
+#sidebar .sidebar-content {
+  display: inline-flex;
+  flex-direction: column;
 }
 
 #sidebar h1 {
@@ -103,10 +110,8 @@ body {
   width: 100%;
   padding: 4px 10px;
   border-radius: 4px;
-}
-
-#sidebar .category-item:hover {
-  background-color: #e0e0e0;
+  transition: all 0.3s ease;
+  transform-origin: left center;
 }
 
 #sidebar .category-item p {
@@ -115,6 +120,17 @@ body {
 
 #sidebar .task-count {
   font-family: sans-serif;
+}
+
+.category-item:hover {
+  transform: scale(1.05);
+}
+
+.category-item.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
 }
 
 .category-separator {
@@ -134,6 +150,30 @@ body {
   gap: 8px;
   margin-bottom: 10px;
   padding: 4px 10px;
+  cursor: pointer;
+}
+
+#sidebar .reset-project {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-width: fit-content;
+  width: 80%;
+  margin: 0 auto;
+  padding: 10px;
+  background-color: var(--var-color-secondary);
+  color: hsl(from var(--var-color-white) h s l / 0.9);
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#sidebar .reset-project:hover {
+  background-color: var(--var-color-primary);
+  color: var(--var-color-black);
 }
 
 /* main */
@@ -156,7 +196,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  width: 1000px;
+  width: 800px;
 }
 
 .todo-item {
@@ -171,7 +211,7 @@ body {
 
 .todo-title.completed,
 .todo-due-date.completed {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .todo-checkbox {
@@ -196,7 +236,7 @@ body {
 
 .todo-checkbox:checked::after {
   content: "\2713";
-  font-size: 16px;
+  font-size: 1rem;
   color: white;
   position: absolute;
   top: 50%;
@@ -242,62 +282,167 @@ body {
 /* modal */
 
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
+  background-color: var(--var-color-secondary);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
 }
 
 .modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+  color: var(--var-color-primary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .modal-close:hover,
 .modal-close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+  color: var(--var-color-tertiary);
+  text-decoration: none;
+  cursor: pointer;
 }
 
-/* project */
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.modal-top h2 {
+  font-size: 1.75rem;
+  color: var(--var-color-white);
+}
+
+/* todo modal */
+
+#todo-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+#todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#todo-form input[type="text"] {
+  width: 100%;
+  padding: 9px 8px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
+
+#todo-form input[type="text"]:focus,
+#todo-form input[type="date"]:focus,
+#todo-form select:focus {
+  outline: none;
+  border: none;
+}
+
+#todo-form input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
+
+#todo-form .form-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+#todo-form select {
+  width: clamp(25%, 35%, 40%);
+  padding: 8px 6px;
+  border-radius: 4px;
+  border: none;
+  font-size: 0.9rem;
+}
+
+#todo-form button {
+  flex: 1;
+  width: auto;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* project modal*/
 
 #project-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   max-width: 300px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 #project-form input[type="text"] {
   width: 100%;
   padding: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+#project-form input[type="text"]:focus {
+  outline: none;
+  border: none;
 }
 
 #project-form button {
   width: 100%;
   padding: 10px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
+#todo-form button:hover,
 #project-form button:hover {
   background-color: #45a049;
 }

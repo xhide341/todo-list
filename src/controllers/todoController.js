@@ -1,67 +1,119 @@
 // controller/todoController.js
-import { getTodos, addTodo, updateTodo, deleteTodo } from '../services/todoService.js';
-import { renderTodoList } from '../components/todoList.js';
+import {
+  getTodos,
+  addTodo,
+  updateTodo,
+  deleteTodo,
+} from "../services/todoService.js";
+import { renderTodoList } from "../components/todoList.js";
 
-export const initTodoController = (category) => {
-    const main = document.getElementById('main');
-    const modal = document.getElementById('todo-modal');
-    const form = document.getElementById('todo-form');
+export const initTodoController = (initalCategory) => {
+  let category = initalCategory;
+  const main = document.getElementById("main");
+  const todoModal = document.getElementById("todo-modal");
+  const form = document.getElementById("todo-form");
+  const formHeader = todoModal.querySelector("h2");
+  const closeButton = todoModal.querySelector(".modal-close");
 
-    // Controller functions
-    const renderTodos = () => {
-        const todos = getTodos(category);
-        renderTodoList(todos, category, onToggleTodo, onEditTodo, onDeleteTodo);
-    };
-
-    const onAddTask = () => {
-        modal.style.display = 'block';
-        form.reset();
-    };
-
-    const onToggleTodo = (todoId, isCompleted) => {
-        updateTodo(category, todoId, { completed: isCompleted });
-    };
-
-    const onEditTodo = (todoId) => {
-        const todos = getTodos(category);
-        const todo = todos.find(t => t.id === todoId);
-        form.title.value = todo.title;
-        form.dueDate.value = todo.dueDate;
-        form.priority.value = todo.priority;
-        modal.style.display = 'block';
-        form.onsubmit = (e) => handleFormSubmit(e, todoId);
-    };
-
-    const onDeleteTodo = (todoId) => {
-        deleteTodo(category, todoId);
-        renderTodos();
-    };
-
-    const handleFormSubmit = (e, todoId = null) => {
-        e.preventDefault();
-        const todoData = {
-            title: form.title.value,
-            dueDate: form.dueDate.value,
-            priority: form.priority.value
-        };
-        if (todoId) {
-            updateTodo(category, todoId, todoData);
-        } else {
-            addTodo(category, todoData);
+  // Update task count
+  const updateTaskCount = () => {
+    const categories = ["Home", "Today", "Upcoming", ...getProjectCategories()];
+    categories.forEach((cat) => {
+      const todos = getTodos(cat);
+      const count = todos.length;
+      const categoryItems = document.querySelectorAll(".category-item");
+      categoryItems.forEach((item) => {
+        const categoryName = item.querySelector("p").textContent.trim();
+        if (categoryName === cat) {
+          const countElement = item.querySelector(".task-count");
+          if (countElement) {
+            countElement.textContent = count;
+          }
         }
-        modal.style.display = 'none';
-        renderTodos();
+      });
+    });
+  };
+
+  // Helper function to get project categories
+  const getProjectCategories = () => {
+    const projectItems = document.querySelectorAll(
+      "#project-list .category-item",
+    );
+    return Array.from(projectItems).map((item) =>
+      item.querySelector("p").textContent.trim(),
+    );
+  };
+
+  const setCategory = (newCategory) => {
+    category = newCategory;
+  };
+
+  // Controller functions
+  const renderTodos = (category) => {
+    const todos = getTodos(category);
+    renderTodoList(todos, category, onToggleTodo, onEditTodo, onDeleteTodo);
+  };
+
+  const onAddTask = () => {
+    todoModal.style.display = "block";
+    form.reset();
+  };
+
+  const onToggleTodo = (todoId, isCompleted) => {
+    updateTodo(category, todoId, { completed: isCompleted });
+  };
+
+  const onEditTodo = (todoId) => {
+    const todos = getTodos(category);
+    const todo = todos.find((t) => t.id === todoId);
+    formHeader.textContent = "Edit Task";
+    form.title.value = todo.title;
+    form.dueDate.value = todo.dueDate;
+    form.priority.value = todo.priority;
+    todoModal.style.display = "block";
+    form.onsubmit = (e) => handleFormSubmit(e, todoId);
+  };
+
+  const onDeleteTodo = (todoId) => {
+    deleteTodo(category, todoId);
+    renderTodos(category);
+    updateTaskCount();
+  };
+
+  const handleFormSubmit = (e, todoId = null) => {
+    e.preventDefault();
+    const todoData = {
+      title: form.title.value,
+      dueDate: form.dueDate.value,
+      priority: form.priority.value,
     };
+    if (todoId) {
+      updateTodo(category, todoId, todoData);
+    } else {
+      addTodo(category, todoData);
+      onAddTask();
+    }
+    todoModal.style.display = "none";
+    updateTaskCount();
+    renderTodos(category);
+  };
 
-    // Set up event listeners
-    form.onsubmit = handleFormSubmit;
+  closeButton.addEventListener("click", () => {
+    todoModal.style.display = "none";
+  });
 
-    // Initial render
-    renderTodos();
+  // Set up event listeners
+  form.onsubmit = handleFormSubmit;
 
-    // Return public methods if needed
-    return {
-        onAddTask,
-        renderTodos
-    };
+  // Initial render
+  renderTodos(category);
+
+  // Return public methods if needed
+  return {
+    onAddTask,
+    renderTodos,
+    updateTaskCount,
+    getCategory: () => category,
+    setCategory,
+  };
 };
