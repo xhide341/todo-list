@@ -60,7 +60,7 @@ body {
   display: grid;
   width: 100dvw;
   height: 100dvh;
-  grid-template-columns: 1fr 6fr;
+  grid-template-columns: 1fr 7fr;
   font-family: "Poppins", sans-serif;
 }
 
@@ -181,6 +181,7 @@ body {
 #main {
   display: flex;
   flex-direction: column;
+  width: 100%;
   grid-column: 2 / 3;
   padding: 50px;
   background-color: var(--var-color-primary);
